@@ -13,7 +13,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[iNum:=iNum+2;
+      <ST><![CDATA[iNum:=iNum+3;
 
 // Handle disabling movers
 IF MachineState > 20 AND HmiDisable THEN	// Initialized
