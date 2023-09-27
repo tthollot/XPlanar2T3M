@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ProcessStation" Id="{adc556c5-8a5e-4fd0-9a8e-cdb4eb5d888b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ProcessStation EXTENDS FB_XPlanarStationBase
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{688c26fc-bf7b-4451-a2e3-417f43cf74cf}">
+      <Declaration><![CDATA[METHOD Execute
+
+VAR_INST
+	ProcessState		: INT;
+	tonProcess			: TON;
+	Station1Toggle		: BOOL;
+	
+END_VAR
+
+VAR
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.Execute();		// executes base station method
+
+IF StationState = E_XPlanarStationState.ProcessMover THEN
+		tonProcess(IN:= ProcessState=10, PT:= T#1S, Q=> , ET=> );
+	
+	CASE ID OF
+			
+		1:  // Station1 process and decision point
+			CASE ProcessState OF
+			0:	// init / reset?
+				ProcessState := 10;
+				
+			10: // simulate process with timer
+				IF tonProcess.Q THEN ProcessState := 20; END_IF
+				
+			20:	// after process time, decide what to do next
+				GVL.MoverProcessData[ipCurrentMover.MoverIndex].Status := 1;		// product loaded (visu color on)
+				IF Station1Toggle THEN
+					ipNextStation := ip.Stations[2];
+				ELSE
+					ipNextStation := ip.Stations[3];
+				END_IF
+				Station1Toggle := NOT(Station1Toggle);
+				CycleCount := CycleCount + 1;
+				ProcessState := 100;
+			END_CASE
+
+			
+		2:  // Station2 process
+			CASE ProcessState OF
+			0:	// init / reset?
+				ProcessState := 10;
+				
+			10: // simulate process with timer
+				IF tonProcess.Q THEN ProcessState := 20; END_IF
+				
+			20:	// Decide what to do next
+				GVL.MoverProcessData[ipCurrentMover.MoverIndex].Status := 0;		// product unloaded (visu off)
+				ipNextStation := ip.Stations[1];	
+				ProcessState := 100;
+			END_CASE			
+
+			
+		3:  // Station3 process
+			CASE ProcessState OF
+			0:	// init / reset?
+				ProcessState := 10;
+				
+			10: // simulate process with timer
+				IF tonProcess.Q THEN ProcessState := 20; END_IF
+				
+			20:	// Decide what to do next
+				IF ip.Stations[2].HasMover THEN		// releasing mover to station1 could block mover from getting to Station2
+					GVL.MoverProcessData[ipCurrentMover.MoverIndex].Status := 0;		// product unloaded (visu off)
+					ipNextStation := ip.Stations[1];	
+					ProcessState := 100;
+				END_IF
+			END_CASE			
+
+			
+	END_CASE
+
+	IF ProcessState=100 THEN	// station completed
+		// update motion params and gap - could be station specific
+		ipCurrentMover.MoveDynamics.Velo := MoverVelo;
+		ipCurrentMover.MoveDynamics.Accel := MoverAccel;
+		ipCurrentMover.MoveDynamics.Decel := MoverAccel;
+		ipCurrentMover.MoveDynamics.Jerk := MoverJerk;
+		ipCurrentMover.MoveDynamics.Gap := MoverGap;		
+		ProcessState := 0;
+		_StationComplete := TRUE;						// process complete - triggers move to next station
+	END_IF
+
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

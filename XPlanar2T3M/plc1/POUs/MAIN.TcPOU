@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{df121195-c89b-4c0d-945b-66f2cd4807fb}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	iNum				: INT;
+	
+	// HMI or PB state triggers
+	HmiReset			: BOOL;
+	HmiRun				: BOOL;
+	HmiStop				: BOOL;	
+	HmiDisable			: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[iNum:=iNum+1;
+
+// Handle disabling movers
+IF MachineState > 20 AND HmiDisable THEN	// Initialized
+	HmiDisable := FALSE;
+	XPlanar1.XPlanarTable.XPlanarSystem.DisableMovers();
+	MachineState := 1000;
+END_IF
+
+
+CASE MachineState OF
+	0:  // startup
+		MachineState := MachineState + 10;
+
+	10:  // wait for Reset / initialize trigger
+		IF HmiReset THEN
+			HmiReset := FALSE;
+			MachineState := MachineState + 10;
+		END_IF
+		
+	20:  // Initialize (build tracks, setup stations, enable Group, movers, tracks)
+		IF XPlanar1.Initialize() THEN
+			MachineState := MachineState + 10;
+		END_IF
+
+	30: // Reset / enable
+		IF XPlanar1.Reset() THEN
+			MachineState := MachineState + 10;
+		END_IF
+	
+		
+	40:  // Recovery (movers join tracks and go to station1)
+		XPlanar1.Execute();	// only needed when moving movers
+
+		IF XPlanar1.Recovery() THEN
+			MachineState := 100;
+		END_IF
+
+		
+	100:  // Idle, ready to run
+		IF HmiRun THEN
+			HmiRun := FALSE;
+			MachineState := 200;
+		END_IF
+
+	200:  // Running
+		XPlanar1.Execute();	// only needed when moving movers
+
+		IF HmiStop THEN
+			HmiStop := FALSE;
+			MachineState := 100;
+		END_IF
+	
+	1000:  // Estopped
+		IF HmiReset THEN
+			HmiReset := FALSE;
+			MachineState := 30;
+		END_IF
+	
+END_CASE
+
+XPlanar1.CyclicLogic();		// top level XPlanar object CyclicLogic method must be called every PLC cycle
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

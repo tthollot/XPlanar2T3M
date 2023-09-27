@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_XPlanarModule" Id="{8ad72c7f-c284-4ca5-9d58-9f994896dcab}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_XPlanarModule
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	
+    XPlanarTable 		: FB_Component_XPlanar 	:= (Name := 'XPlanarTable');
+	Station1	 		: FB_ProcessStation		:= (Name := 'Station1');
+	Station2	 		: FB_ProcessStation		:= (Name := 'Station2');
+	Station3	 		: FB_ProcessStation		:= (Name := 'Station3');
+
+	Movers				: ARRAY[1..Tc3_XPlanarStandard.Params_XPlanar.moverCount] OF FB_XPlanarMover;
+	Tracks				: ARRAY[1..Tc3_XPlanarStandard.Params_XPlanar.maxTrackCount] OF FB_XplanarTrackSegment;
+	
+	MoversTracksInit	: BOOL;	
+	
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// CyclicLogic method must be called every PLC cycle - it calls underlying cyclic methods
+// Execute method must be called when running or moving movers for recovery - manages station state machine
+// Initialize method assign Mover and Track IPs, configures and builds tracks & track network, sets up Stations
+// Reset method resets objects, enables group, enables movers
+// Recovery method sorts movers - join track and go to appropriate station
+]]></ST>
+    </Implementation>
+    <Method Name="CyclicLogic" Id="{df765dac-44a7-494b-8b93-b3067eab3320}">
+      <Declaration><![CDATA[METHOD CyclicLogic : BOOL
+VAR_INPUT
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT MoversTracksInit THEN
+	RETURN;
+END_IF
+
+XPlanarTable.CyclicLogic();
+Station1.CyclicLogic();
+Station2.CyclicLogic();
+Station3.CyclicLogic();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Execute" Id="{bee18090-1138-4f09-b4d4-c078a6ad501f}">
+      <Declaration><![CDATA[METHOD Execute : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+    i 				: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// should only be called when running or moving movers for recovery
+
+IF XPlanarTable.InitComplete THEN		
+	FOR i := 1 TO Params_XPlanar.maxNumStation DO
+		ip.Stations[i].Execute();
+	END_FOR
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Initialize" Id="{8b16da44-ae57-44ec-93d2-70e9126de768}">
+      <Declaration><![CDATA[METHOD Initialize : BOOL
+VAR_INPUT	
+END_VAR
+
+VAR_INST
+
+	i				: UDINT;
+	InitState		: UDINT;
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+CASE InitState OF
+	
+0:
+	InitState := InitState + 10;
+
+10: // assign mover and track IPs
+	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
+		Movers[i].MoverIndex := i;
+		ip.Movers[i] := Movers[i];
+	END_FOR
+	
+	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.maxTrackCount DO
+		ip.Tracks[i] := Tracks[i];
+	END_FOR
+	
+	MoversTracksInit := TRUE;
+	InitState := InitState + 10;
+	
+20:
+	IF XPlanarTable.InitComplete THEN
+		InitState := InitState + 10;
+	END_IF	
+
+30:  // Set parameters for all tracks - line segments, points, track start/end relationships
+	IF SetupTrackSegments() THEN
+		InitState := InitState + 10;
+	END_IF
+
+40:  // Build and connect all track segments to create track network
+	IF XPlanarTable.BuildTracks() THEN
+		InitState := InitState + 10;
+	END_IF
+	
+50:  // Set parameters for all stations
+	IF SetupStations() THEN
+		InitState := InitState + 10;
+	END_IF
+
+60:
+	Initialize := TRUE;	
+
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Recovery" Id="{28e45a19-9d16-43f0-abe4-b54f1989defd}">
+      <Declaration><![CDATA[METHOD Recovery : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	RecoveryState		: UDINT;
+	i					: UDINT;
+	j					: UDINT;
+	JoinTrackNum		: UINT;
+	AllMoversOnTracks	: BOOL;
+	
+	dummy		: udint;
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Recovery := FALSE;
+
+CASE RecoveryState OF
+	
+0:
+	i := 1;
+	RecoveryState := RecoveryState + 10;
+
+10: // set Mover gap
+	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
+		ip.Movers[i].MoveDynamics.Gap:=MoverGap;	// set smaller gap
+		MoverProcessData[i].Status:=0;	
+	END_FOR
+	i := 1;
+
+	RecoveryState := RecoveryState + 10;
+
+20: // determine which track to join
+	IF ip.Movers[i].std.P_ActPosition.x < 240 THEN
+		JoinTrackNum := 1;
+	ELSE
+		JoinTrackNum := 3;
+	END_IF
+
+	IF ip.Movers[i].JoinTrack(ip.Tracks[JoinTrackNum]) THEN
+		i := i + 1;
+	END_IF
+	
+	IF i > Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
+		RecoveryState := RecoveryState + 10;
+	END_IF
+
+30:  // verify on track	
+	AllMoversOnTracks:=TRUE;
+	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
+		AllMoversOnTracks := AllMoversOnTracks AND (ip.Movers[i].std.P_TrackId<>0);		// if any mover not on track set False
+	END_FOR
+	
+	IF AllMoversOnTracks THEN
+		i := 1;
+		j := 1;
+		RecoveryState := RecoveryState + 10;		
+	END_IF
+	
+40:  // send movers to stations
+	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
+		IF ip.Movers[i].std.P_ActPosition.Y < 119 THEN 
+			IF ip.Movers[i].SendToStation(ip.Stations[1]) THEN
+				j := j + 1;
+			END_IF		
+		ELSIF ip.Movers[i].std.P_ActPosition.X < 210 AND ip.Stations[3].HasMover THEN
+			IF ip.Movers[i].SendToStation(ip.Stations[2]) THEN
+				j := j + 1;
+			END_IF
+		ELSE
+			IF ip.Movers[i].SendToStation(ip.Stations[3]) THEN
+				j := j + 1;
+			END_IF
+			
+		END_IF
+	END_FOR
+
+	IF j >= Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
+		RecoveryState := RecoveryState + 10;
+	END_IF
+
+	dummy:=dummy+1;
+	
+50:
+	Recovery := TRUE;
+	RecoveryState := 0;
+
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{eb18211a-1548-0bef-084c-f3eb37785e68}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_INST
+	ResetState		: UDINT;
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Reset := FALSE;
+
+CASE ResetState OF
+	
+0:
+	ResetState := ResetState + 10;
+	
+10:  // Force movers to leave tracks (handles case where movers are still on tracks - support for Recovery method)
+	IF XPlanarTable.XPlanarSystem.LeaveTrack() THEN
+		ResetState := ResetState + 10;
+	END_IF
+
+20:  // Force movers to leave tracks (handles case where movers are still on tracks - support for Recovery method)
+	IF XPlanarTable.XPlanarSystem.P_LeaveTrack.Done THEN
+		ResetState := ResetState + 10;
+	END_IF
+
+30:  // Reset base objects (movers and tracks)
+	IF XPlanarTable.Reset() THEN
+		ResetState := ResetState + 10;
+	END_IF
+	
+40:  // Enable Group (for CA)
+	IF XPlanarTable.EnableGroup() THEN
+		ResetState := ResetState + 10;		
+	END_IF
+
+50:  // Enable and add movers to Group
+	IF XPlanarTable.EnableMovers(UseGroup:=TRUE) THEN
+		ResetState := ResetState + 10;		
+	END_IF
+	
+60:  // Enable and add tracks to Group
+	IF XPlanarTable.EnableTracks(UseGroup:=TRUE) THEN
+		ResetState := ResetState + 10;		
+	END_IF	
+	
+70:
+	Reset := TRUE;	
+	ResetState := 0;
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetupStations" Id="{e52047e4-f273-4ca6-91cf-1c0835a57440}">
+      <Declaration><![CDATA[METHOD PRIVATE SetupStations : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	nSta			: UDINT;	// station index
+	StationSize 	: UDINT := 50;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+nSta := 1;
+ip.Stations[nSta] := Station1;							// set station index
+ip.Stations[nSta].ID := nSta;							// assign fb to ip
+ip.Stations[nSta].TrackID := ip.Tracks[1];				// track station is on
+ip.Stations[nSta].Position.SetValuesXYC(60, 120, 0);	// station XY location
+ip.Stations[nSta].Size.x := StationSize;		
+ip.Stations[nSta].Size.y := StationSize;				// Station size - when station claims mover
+ip.Stations[nSta].StationType := E_StationType.Process;	// (default) process station - Mover stops to 'do' something
+
+GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);
+GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y);
+
+nSta := 2;
+ip.Stations[nSta] := Station2;							// set station index
+ip.Stations[nSta].ID := nSta;							// assign fb to ip
+ip.Stations[nSta].TrackID := ip.Tracks[2];				// track station is on
+ip.Stations[nSta].Position.SetValuesXYC(240, 120, 0);	// station XY location
+ip.Stations[nSta].Size.x := StationSize;		
+ip.Stations[nSta].Size.y := StationSize;				// Station size - when station claims mover
+ip.Stations[nSta].StationType := E_StationType.Process;	// (default) process station - Mover stops to 'do' something
+ip.Stations[nSta].NextStation := ip.Stations[1];		// always go to Station1
+
+GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);
+GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y);
+
+nSta := 3;
+ip.Stations[nSta] := Station3;							// set station index
+ip.Stations[nSta].ID := nSta;							// assign fb to ip
+ip.Stations[nSta].TrackID := ip.Tracks[3];				// track station is on
+ip.Stations[nSta].Position.SetValuesXYC(420, 120, 0);	// station XY location
+ip.Stations[nSta].Size.x := StationSize;		
+ip.Stations[nSta].Size.y := StationSize;				// Station size - when station claims mover
+ip.Stations[nSta].StationType := E_StationType.Process;	// (default) process station - Mover stops to 'do' something
+ip.Stations[nSta].NextStation := ip.Stations[1];		// always go to Station1
+
+GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);
+GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y);
+
+SetupStations := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetupTrackSegments" Id="{c993939d-20e4-4cee-b613-07c22d3b3260}">
+      <Declaration><![CDATA[METHOD PRIVATE SetupTrackSegments : BOOL
+VAR_INST
+    nSegmentIndex 		: UDINT;
+END_VAR
+
+VAR
+    ResultAddPoint 		: INT;
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetupTrackSegments := FALSE;
+CASE nSegmentIndex OF
+    0: //Get ready
+        nSegmentIndex := nSegmentIndex + 1;
+
+    //********************************************************************************************************************************
+    //Add states for each track segment in the system
+    //********************************************************************************************************************************
+
+    1:
+        ip.Tracks[nSegmentIndex].ID := nSegmentIndex;
+        IF ip.Tracks[nSegmentIndex].TrackTable.ClearTrackTable() THEN
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	210.0, 60.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	90.0, 60.0, 0.0);
+
+			ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	60.0, 90.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	60.0, 150.0, 0.0);
+
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	90.0, 180.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	210.0, 180.0, 0.0);
+
+            ip.Tracks[nSegmentIndex].TrackTable.P_CloseTheLoop := FALSE;
+            ip.Tracks[nSegmentIndex].TrackTable.P_StartFromTrack := 0;
+            ip.Tracks[nSegmentIndex].TrackTable.P_EndAtTrack     := 0;
+			
+        END_IF
+
+        nSegmentIndex := nSegmentIndex + 1;
+
+    2:
+        ip.Tracks[nSegmentIndex].ID := nSegmentIndex;
+        IF ip.Tracks[nSegmentIndex].TrackTable.ClearTrackTable() THEN
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	240.0, 150.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	240.0, 90.0, 0.0);
+
+            ip.Tracks[nSegmentIndex].TrackTable.P_CloseTheLoop   := FALSE;
+            ip.Tracks[nSegmentIndex].TrackTable.P_StartFromTrack := ip.Tracks[1].std;
+            ip.Tracks[nSegmentIndex].TrackTable.P_EndAtTrack     := ip.Tracks[1].std;
+        END_IF
+
+        nSegmentIndex := nSegmentIndex + 1;
+
+    3:
+        ip.Tracks[nSegmentIndex].ID := nSegmentIndex;
+        IF ip.Tracks[nSegmentIndex].TrackTable.ClearTrackTable() THEN
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	240.0, 180.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	390.0, 180.0, 0.0);
+
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	420.0, 150.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	420.0, 90.0, 0.0);
+			
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_Start, E_PointOption.none, 	390.0, 60.0, 0.0);
+            ResultAddPoint := ip.Tracks[nSegmentIndex].TrackTable.AddPoint(E_PointType.Line_End, E_PointOption.none, 	240.0, 60.0, 0.0);
+
+            ip.Tracks[nSegmentIndex].TrackTable.P_CloseTheLoop   := FALSE;
+            ip.Tracks[nSegmentIndex].TrackTable.P_StartFromTrack := ip.Tracks[1].std;
+            ip.Tracks[nSegmentIndex].TrackTable.P_EndAtTrack     := ip.Tracks[1].std;
+        END_IF
+
+        nSegmentIndex := nSegmentIndex + 1;
+
+    4:
+        nSegmentIndex      := 0;
+        SetupTrackSegments := TRUE;
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

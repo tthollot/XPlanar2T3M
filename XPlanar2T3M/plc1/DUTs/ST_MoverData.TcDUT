@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_MoverData" Id="{301f9f42-782e-436d-9b1a-18c6ffb6946b}">
+    <Declaration><![CDATA[TYPE ST_MoverData :
+STRUCT
+	Status	: int;		// 0- no product, 1- product loaded, 2- product good at station2, 99- product rejected
+	PreviousStation	: UDINT;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

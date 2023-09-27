@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="GVL" Id="{51de8d00-9a29-4d86-9921-b192bc198f79}">
+    <Declaration><![CDATA[//{attribute 'qualified_only'}
+VAR_GLOBAL
+	XPlanar1			: FB_XPlanarModule;
+	MachineState		: UDINT;
+
+	// mover and station application data
+	MoverProcessData 	: ARRAY[1..Tc3_XPlanarStandard.Params_XPlanar.moverCount] OF ST_MoverData;
+	StationProcessData 	: ARRAY[1..Tc3_XPlanarStandard.Params_XPlanar.maxNumStation] OF ST_StationData;
+	
+	iVisuYoffset		: INT := 240;	// vertical offset for visu elements (table Y size)
+	CycleCount			: UDINT;
+
+	MoverVelo			: LREAL	:= 400;
+	MoverAccel			: LREAL	:= 2000;	
+	MoverJerk			: LREAL := 20000;
+	MoverGap			: LREAL	:= 200;
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

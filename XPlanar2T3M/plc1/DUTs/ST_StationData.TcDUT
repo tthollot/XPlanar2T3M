@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_StationData" Id="{073477ec-8f7d-4a9c-8ada-62ba498f2634}">
+    <Declaration><![CDATA[TYPE ST_StationData :
+STRUCT
+	Status		: INT;
+	VisuPosX 	: INT;
+	VisuPosY 	: INT;
+//	ProcessTimeAve	: TIME :=T#1S;		// average station process time
+//	ProcessTimeAct	: TIME;				// actual (randomized) process time
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
