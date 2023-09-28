@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\XPlanar2T3M",
+    "\\XPlanar2T3M\\plc1",
+    "\\XPlanar2T3M\\plc1\\POUs",
+    "\\XPlanar2T3M\\plc1\\VISUs"
+  ],
+  "SelectedNode": "\\XPlanar2T3M\\plc1\\POUs\\MAIN.TcPOU",
+  "PreviewInSolutionExplorer": false
+}
