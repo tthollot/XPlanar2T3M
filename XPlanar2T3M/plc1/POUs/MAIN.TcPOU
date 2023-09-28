@@ -4,6 +4,8 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	iNum				: INT;
+	XPlanar1			: FB_XPlanarModule;
+	MachineState		: UDINT;
 	
 	// HMI or PB state triggers
 	HmiReset			: BOOL;
