@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <POU Name="MAIN" Id="{df121195-c89b-4c0d-945b-66f2cd4807fb}" SpecialFunc="None">
+  <POU Name="MAIN" Id="{2d0cae6b-80f3-0ef8-04d4-69f327bbcca6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	iNum				: INT;
 	XPlanar1			: FB_XPlanarModule;
 	MachineState		: UDINT;
 	
@@ -12,18 +11,13 @@ VAR
 	HmiRun				: BOOL;
 	HmiStop				: BOOL;	
 	HmiDisable			: BOOL;
+	
+	iNum				: INT;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[iNum:=iNum+3;
-
-// Handle disabling movers
-IF MachineState > 20 AND HmiDisable THEN	// Initialized
-	HmiDisable := FALSE;
-	XPlanar1.XPlanarTable.XPlanarSystem.DisableMovers();
-	MachineState := 1000;
-END_IF
-
+      <ST><![CDATA[iNum:=iNum+1;
 
 CASE MachineState OF
 	0:  // startup
@@ -44,15 +38,13 @@ CASE MachineState OF
 		IF XPlanar1.Reset() THEN
 			MachineState := MachineState + 10;
 		END_IF
-	
 		
 	40:  // Recovery (movers join tracks and go to station1)
-		XPlanar1.Execute();	// only needed when moving movers
+		XPlanar1.Execute();	// only needed when running or moving movers
 
 		IF XPlanar1.Recovery() THEN
 			MachineState := 100;
 		END_IF
-
 		
 	100:  // Idle, ready to run
 		IF HmiRun THEN
@@ -61,14 +53,14 @@ CASE MachineState OF
 		END_IF
 
 	200:  // Running
-		XPlanar1.Execute();	// only needed when moving movers
+		XPlanar1.Execute();	// only needed when running or moving movers
 
 		IF HmiStop THEN
 			HmiStop := FALSE;
 			MachineState := 100;
 		END_IF
 	
-	1000:  // Estopped
+	1000:  // Disabled or faulted
 		IF HmiReset THEN
 			HmiReset := FALSE;
 			MachineState := 30;
@@ -77,6 +69,16 @@ CASE MachineState OF
 END_CASE
 
 XPlanar1.CyclicLogic();		// top level XPlanar object CyclicLogic method must be called every PLC cycle
+
+
+// Handle disabling movers
+IF (MachineState > 20 AND HmiDisable) 					// monitor disable button after initialized
+	OR (MachineState > 90 AND XPlanar1.MoverErr) THEN	// monitor mover error / estop while running
+	
+	HmiDisable := FALSE;
+	XPlanar1.XPlanarTable.XPlanarSystem.DisableMovers();
+	MachineState := 1000;
+END_IF
 ]]></ST>
     </Implementation>
   </POU>
