@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <POU Name="FB_XPlanarModule" Id="{8ad72c7f-c284-4ca5-9d58-9f994896dcab}" SpecialFunc="None">
+  <POU Name="FB_XPlanarModule" Id="{251c3971-244f-091d-3a9c-7a608edd1463}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_XPlanarModule
 VAR_INPUT
 END_VAR
@@ -17,6 +17,7 @@ VAR
 	Tracks				: ARRAY[1..Tc3_XPlanarStandard.Params_XPlanar.maxTrackCount] OF FB_XplanarTrackSegment;
 	
 	MoversTracksInit	: BOOL;	
+	MoverErr			: BOOL;
 	
 END_VAR
 
@@ -29,7 +30,7 @@ END_VAR
 // Recovery method sorts movers - join track and go to appropriate station
 ]]></ST>
     </Implementation>
-    <Method Name="CyclicLogic" Id="{df765dac-44a7-494b-8b93-b3067eab3320}">
+    <Method Name="CyclicLogic" Id="{0677fd3b-e9c5-0389-28b8-94faac1649fd}">
       <Declaration><![CDATA[METHOD CyclicLogic : BOOL
 VAR_INPUT
 END_VAR
@@ -44,10 +45,12 @@ XPlanarTable.CyclicLogic();
 Station1.CyclicLogic();
 Station2.CyclicLogic();
 Station3.CyclicLogic();
-]]></ST>
+
+// Mover error?  (Estopped?)
+MoverErr := ip.Movers[1].std.P_ErrorCode<>0 OR ip.Movers[2].std.P_ErrorCode<>0 OR ip.Movers[3].std.P_ErrorCode<>0;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Execute" Id="{bee18090-1138-4f09-b4d4-c078a6ad501f}">
+    <Method Name="Execute" Id="{6119338a-ec13-0b76-3cb7-2fa2d14031a0}">
       <Declaration><![CDATA[METHOD Execute : BOOL
 VAR_INPUT
 END_VAR
@@ -57,7 +60,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// should only be called when running or moving movers for recovery
+        <ST><![CDATA[// Only needs to be called when running or moving movers for recovery - executes station logic
 
 IF XPlanarTable.InitComplete THEN		
 	FOR i := 1 TO Params_XPlanar.maxNumStation DO
@@ -67,7 +70,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Initialize" Id="{8b16da44-ae57-44ec-93d2-70e9126de768}">
+    <Method Name="Initialize" Id="{0f8e7a97-6d35-0e40-0fdb-1e191190ab11}">
       <Declaration><![CDATA[METHOD Initialize : BOOL
 VAR_INPUT	
 END_VAR
@@ -126,7 +129,7 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Recovery" Id="{28e45a19-9d16-43f0-abe4-b54f1989defd}">
+    <Method Name="Recovery" Id="{f1b6e24f-bb5f-05aa-31da-7f94cb063c56}">
       <Declaration><![CDATA[METHOD Recovery : BOOL
 VAR_INPUT
 END_VAR
@@ -134,11 +137,9 @@ END_VAR
 VAR_INST
 	RecoveryState		: UDINT;
 	i					: UDINT;
-	j					: UDINT;
-	JoinTrackNum		: UINT;
+	JoinTrackNum		: UDINT;
 	AllMoversOnTracks	: BOOL;
-	
-	dummy		: udint;
+	GoToStationNum		: UDINT;
 	
 END_VAR]]></Declaration>
       <Implementation>
@@ -147,12 +148,11 @@ END_VAR]]></Declaration>
 CASE RecoveryState OF
 	
 0:
-	i := 1;
 	RecoveryState := RecoveryState + 10;
 
 10: // set Mover gap
 	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
-		ip.Movers[i].MoveDynamics.Gap:=MoverGap;	// set smaller gap
+		ip.Movers[i].MoveDynamics.Gap:=MoverGap;	// change default gap
 		MoverProcessData[i].Status:=0;	
 	END_FOR
 	i := 1;
@@ -160,55 +160,62 @@ CASE RecoveryState OF
 	RecoveryState := RecoveryState + 10;
 
 20: // determine which track to join
-	IF ip.Movers[i].std.P_ActPosition.x < 240 THEN
+	IF ip.Movers[i].std.P_ActPosition.X < 220 THEN
 		JoinTrackNum := 1;
 	ELSE
 		JoinTrackNum := 3;
 	END_IF
-
+	
+	RecoveryState := RecoveryState + 1;
+	
+21:	// mover joins track
 	IF ip.Movers[i].JoinTrack(ip.Tracks[JoinTrackNum]) THEN
 		i := i + 1;
+		IF i > Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
+			RecoveryState := RecoveryState + 9;		// all movers handled
+		ELSE
+			RecoveryState := RecoveryState - 1;		// do next mover
+		END_IF
+		
 	END_IF
 	
-	IF i > Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
-		RecoveryState := RecoveryState + 10;
-	END_IF
-
 30:  // verify on track	
 	AllMoversOnTracks:=TRUE;
 	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
-		AllMoversOnTracks := AllMoversOnTracks AND (ip.Movers[i].std.P_TrackId<>0);		// if any mover not on track set False
+//		AllMoversOnTracks := AllMoversOnTracks AND (ip.Movers[i].std.P_TrackId<>0);												// if any mover not on track set False
+		AllMoversOnTracks := AllMoversOnTracks AND (ip.Movers[i].std.P_CommandMode = MC_PLANAR_MOVER_COMMAND_MODE.OnTrack);		// if any mover not on track set False
 	END_FOR
 	
 	IF AllMoversOnTracks THEN
 		i := 1;
-		j := 1;
 		RecoveryState := RecoveryState + 10;		
+	ELSE											// at least on mover not on track
+		IF MAIN.HmiDisable THEN
+			RecoveryState := 0;						// clear state
+		END_IF
+	END_IF
+
+40: // determine which station to go to
+	IF ip.Movers[i].std.P_ActPosition.Y < 119 THEN
+		GoToStationNum := 1;
+	ELSIF ip.Movers[i].std.P_ActPosition.X < 210 AND ip.Stations[3].HasMover THEN
+		GoToStationNum := 2;
+	ELSE
+		GoToStationNum := 3;
 	END_IF
 	
-40:  // send movers to stations
-	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
-		IF ip.Movers[i].std.P_ActPosition.Y < 119 THEN 
-			IF ip.Movers[i].SendToStation(ip.Stations[1]) THEN
-				j := j + 1;
-			END_IF		
-		ELSIF ip.Movers[i].std.P_ActPosition.X < 210 AND ip.Stations[3].HasMover THEN
-			IF ip.Movers[i].SendToStation(ip.Stations[2]) THEN
-				j := j + 1;
-			END_IF
+	RecoveryState := RecoveryState + 1;
+	
+41:	// send movers to stations
+	IF ip.Movers[i].SendToStation(ip.Stations[GoToStationNum]) THEN
+		i := i + 1;
+		IF i > Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
+			RecoveryState := RecoveryState + 9;
 		ELSE
-			IF ip.Movers[i].SendToStation(ip.Stations[3]) THEN
-				j := j + 1;
-			END_IF
-			
+			RecoveryState := RecoveryState - 1;		// do next mover
 		END_IF
-	END_FOR
-
-	IF j >= Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
-		RecoveryState := RecoveryState + 10;
+		
 	END_IF
-
-	dummy:=dummy+1;
 	
 50:
 	Recovery := TRUE;
@@ -219,7 +226,7 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Reset" Id="{eb18211a-1548-0bef-084c-f3eb37785e68}">
+    <Method Name="Reset" Id="{08e72d74-6667-097e-2d50-24e9eee0466e}">
       <Declaration><![CDATA[METHOD Reset : BOOL
 VAR_INPUT
 END_VAR
@@ -227,7 +234,8 @@ END_VAR
 VAR_INST
 	ResetState		: UDINT;
 	
-END_VAR]]></Declaration>
+END_VAR
+]]></Declaration>
       <Implementation>
         <ST><![CDATA[Reset := FALSE;
 
@@ -273,7 +281,7 @@ CASE ResetState OF
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SetupStations" Id="{e52047e4-f273-4ca6-91cf-1c0835a57440}">
+    <Method Name="SetupStations" Id="{acfd32ce-c47a-0b97-2922-eb6666a10851}">
       <Declaration><![CDATA[METHOD PRIVATE SetupStations : BOOL
 VAR_INPUT
 END_VAR
@@ -285,39 +293,39 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
 nSta := 1;
-ip.Stations[nSta] := Station1;							// set station index
-ip.Stations[nSta].ID := nSta;							// assign fb to ip
-ip.Stations[nSta].TrackID := ip.Tracks[1];				// track station is on
+ip.Stations[nSta] := Station1;							// assign FB to IP
+ip.Stations[nSta].ID := nSta;							// set station ID / index
+ip.Stations[nSta].TrackID := ip.Tracks[1];				// set rack station is on
 ip.Stations[nSta].Position.SetValuesXYC(60, 120, 0);	// station XY location
-ip.Stations[nSta].Size.x := StationSize;		
-ip.Stations[nSta].Size.y := StationSize;				// Station size - when station claims mover
+ip.Stations[nSta].Size.x := StationSize;				// Station size - when station recognizes mover
+ip.Stations[nSta].Size.y := StationSize;				
 ip.Stations[nSta].StationType := E_StationType.Process;	// (default) process station - Mover stops to 'do' something
 
-GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);
+GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);	// set Visu position
 GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y);
 
 nSta := 2;
-ip.Stations[nSta] := Station2;							// set station index
-ip.Stations[nSta].ID := nSta;							// assign fb to ip
-ip.Stations[nSta].TrackID := ip.Tracks[2];				// track station is on
-ip.Stations[nSta].Position.SetValuesXYC(240, 120, 0);	// station XY location
+ip.Stations[nSta] := Station2;
+ip.Stations[nSta].ID := nSta;
+ip.Stations[nSta].TrackID := ip.Tracks[2];
+ip.Stations[nSta].Position.SetValuesXYC(240, 120, 0);
 ip.Stations[nSta].Size.x := StationSize;		
-ip.Stations[nSta].Size.y := StationSize;				// Station size - when station claims mover
-ip.Stations[nSta].StationType := E_StationType.Process;	// (default) process station - Mover stops to 'do' something
-ip.Stations[nSta].NextStation := ip.Stations[1];		// always go to Station1
+ip.Stations[nSta].Size.y := StationSize;
+ip.Stations[nSta].StationType := E_StationType.Process;
+ip.Stations[nSta].NextStation := ip.Stations[1];
 
 GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);
 GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y);
 
 nSta := 3;
-ip.Stations[nSta] := Station3;							// set station index
-ip.Stations[nSta].ID := nSta;							// assign fb to ip
-ip.Stations[nSta].TrackID := ip.Tracks[3];				// track station is on
-ip.Stations[nSta].Position.SetValuesXYC(420, 120, 0);	// station XY location
-ip.Stations[nSta].Size.x := StationSize;		
-ip.Stations[nSta].Size.y := StationSize;				// Station size - when station claims mover
-ip.Stations[nSta].StationType := E_StationType.Process;	// (default) process station - Mover stops to 'do' something
-ip.Stations[nSta].NextStation := ip.Stations[1];		// always go to Station1
+ip.Stations[nSta] := Station3;
+ip.Stations[nSta].ID := nSta;
+ip.Stations[nSta].TrackID := ip.Tracks[3];
+ip.Stations[nSta].Position.SetValuesXYC(420, 120, 0);
+ip.Stations[nSta].Size.x := StationSize;
+ip.Stations[nSta].Size.y := StationSize;
+ip.Stations[nSta].StationType := E_StationType.Process;
+ip.Stations[nSta].NextStation := ip.Stations[1];
 
 GVL.StationProcessData[nSta].VisuPosX:=LREAL_TO_INT(ip.Stations[nSta].Position.x);
 GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y);
@@ -325,7 +333,7 @@ GVL.StationProcessData[nSta].VisuPosY:=LREAL_TO_INT(ip.Stations[nSta].Position.y
 SetupStations := TRUE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SetupTrackSegments" Id="{c993939d-20e4-4cee-b613-07c22d3b3260}">
+    <Method Name="SetupTrackSegments" Id="{b342f43d-ef70-07fb-31c2-119f04ddb4c4}">
       <Declaration><![CDATA[METHOD PRIVATE SetupTrackSegments : BOOL
 VAR_INST
     nSegmentIndex 		: UDINT;
