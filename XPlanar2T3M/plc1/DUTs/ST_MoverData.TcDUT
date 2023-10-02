@@ -5,6 +5,7 @@
 STRUCT
 	Status	: int;		// 0- no product, 1- product loaded, 2- product good at station2, 99- product rejected
 	PreviousStation	: UDINT;
+	DestinationStation	: UDINT;
 	
 END_STRUCT
 END_TYPE

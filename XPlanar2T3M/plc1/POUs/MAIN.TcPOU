@@ -17,7 +17,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[iNum:=iNum+2;
+      <ST><![CDATA[iNum:=iNum+1;
 
 CASE MachineState OF
 	0:  // startup
