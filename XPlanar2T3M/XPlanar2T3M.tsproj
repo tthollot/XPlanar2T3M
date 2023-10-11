@@ -2584,11 +2584,11 @@
 			</Licenses>
 			<Parameters>
 				<Group><![CDATA[General]]></Group>
-				<Group><![CDATA[Simulation]]></Group>
-				<Group><![CDATA[Maximum Dynamics]]></Group>
-				<Group><![CDATA[Default Dynamics]]></Group>
-				<Group><![CDATA[Monitoring]]></Group>
-				<Group><![CDATA[Internal]]></Group>
+				<Group Collapsed="true"><![CDATA[Simulation]]></Group>
+				<Group Collapsed="true"><![CDATA[Maximum Dynamics]]></Group>
+				<Group Collapsed="true"><![CDATA[Default Dynamics]]></Group>
+				<Group Collapsed="true"><![CDATA[Monitoring]]></Group>
+				<Group Collapsed="true"><![CDATA[Internal]]></Group>
 				<Parameter HideParameter="true">
 					<Name>TraceLevel</Name>
 					<BitSize>32</BitSize>
@@ -2640,7 +2640,7 @@
 					<PTCID>#x050300b3</PTCID>
 					<ContextId OnlineAccess="true">0</ContextId>
 				</Parameter>
-				<Parameter HideParameter="true" ShowSubItems="true" Group="Simulation">
+				<Parameter HideParameter="true" Group="Simulation">
 					<Name>Initial position</Name>
 					<Comment><![CDATA[Mover position, can be set for disabled mover.]]></Comment>
 					<BitSize>384</BitSize>
@@ -3104,7 +3104,7 @@
 					<BaseType GUID="{FAE6DCD6-33EF-4275-8592-10BCED19E1EA}" Namespace="MC">MC_PLANAR_MOVER_COMMAND_MODE</BaseType>
 					<PTCID>#x050300b7</PTCID>
 				</Parameter>
-				<Parameter OnlineParameter="true" ReadOnly="true">
+				<Parameter OnlineParameter="true" ShowSubItems="true" ReadOnly="true">
 					<Name>ActPos</Name>
 					<Comment><![CDATA[Mover hardware position, read only.]]></Comment>
 					<BitSize>384</BitSize>
@@ -4885,7 +4885,7 @@
 								<Group Collapsed="true"><![CDATA[Inertia]]></Group>
 								<Group Collapsed="true"><![CDATA[ControllerParameters]]></Group>
 								<Group Collapsed="true"><![CDATA[ObserverParameters]]></Group>
-								<Group><![CDATA[SimulationMode]]></Group>
+								<Group Collapsed="true"><![CDATA[SimulationMode]]></Group>
 								<Group Collapsed="true"><![CDATA[ForceLimits]]></Group>
 								<Group Collapsed="true"><![CDATA[Controller]]></Group>
 								<Group Collapsed="true"><![CDATA[Methods]]></Group>
@@ -11634,37 +11634,34 @@
 							<Parameter OnlineParameter="true" ReadOnly="true">
 								<Name>Geometric online information</Name>
 								<Comment><![CDATA[Array containing the elements describing the geometric curve of the track.]]></Comment>
-								<BitSize>1536</BitSize>
+								<BitSize>0</BitSize>
 								<ArraySubItems MaxUnbounded="true">
 									<LBound>1</LBound>
 									<ItemType GUID="{9E820E67-264A-4170-958A-0B26CA5C91FA}" Namespace="MC">MC_POINT_XYC</ItemType>
 									<ItemType GUID="{B48A64D8-464F-4B39-8708-C82C1147C8B6}" Namespace="MC">MC_LINE_XYC</ItemType>
 									<ItemType GUID="{C3BAEC31-7F05-4B2F-A9AE-F0D8872EE557}" Namespace="MC">MC_CIRCLE_XYC_START_CENTER_END</ItemType>
-									<SubItem GUID="{B48A64D8-464F-4B39-8708-C82C1147C8B6}" Namespace="MC">MC_LINE_XYC</SubItem>
-									<SubItem GUID="{B48A64D8-464F-4B39-8708-C82C1147C8B6}" Namespace="MC">MC_LINE_XYC</SubItem>
-									<SubItem GUID="{B48A64D8-464F-4B39-8708-C82C1147C8B6}" Namespace="MC">MC_LINE_XYC</SubItem>
 								</ArraySubItems>
 								<PTCID>#x050300da</PTCID>
 							</Parameter>
 							<Parameter OnlineParameter="true" ReadOnly="true">
 								<Name>Previous tracks</Name>
 								<Comment><![CDATA[Array containing the object IDs of all tracks that end at this track's start vertex, read only.]]></Comment>
-								<BitSize>64</BitSize>
+								<BitSize>0</BitSize>
 								<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
 								<ArrayInfo>
 									<LBound>1</LBound>
-									<Elements Min="0" MaxUnbounded="true">2</Elements>
+									<Elements Min="0" MaxUnbounded="true">0</Elements>
 								</ArrayInfo>
 								<PTCID>#x050300d5</PTCID>
 							</Parameter>
 							<Parameter OnlineParameter="true" ReadOnly="true">
 								<Name>Subsequent tracks</Name>
 								<Comment><![CDATA[Array containing the object IDs of all tracks that start at this track's end vertex, read only.]]></Comment>
-								<BitSize>64</BitSize>
+								<BitSize>0</BitSize>
 								<BaseType GUID="{18071995-0000-0000-0000-00000000000F}">OTCID</BaseType>
 								<ArrayInfo>
 									<LBound>1</LBound>
-									<Elements Min="0" MaxUnbounded="true">2</Elements>
+									<Elements Min="0" MaxUnbounded="true">0</Elements>
 								</ArrayInfo>
 								<PTCID>#x050300d6</PTCID>
 							</Parameter>
@@ -11807,106 +11804,6 @@
 							</Value>
 							<Value>
 								<Name>Moving mover count</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.h1</Name>
-								<Data>d8648ab44f46394b8708c82c1147c8b6</Data>
-							</Value>
-							<Value>
-								<Name>Geometric online information.1.start.x</Name>
-								<Value>210</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.1.start.y</Name>
-								<Value>60</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.1.start.c</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.1.end.x</Name>
-								<Value>90</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.1.end.y</Name>
-								<Value>60</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.1.end.c</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.h2</Name>
-								<Data>d8648ab44f46394b8708c82c1147c8b6</Data>
-							</Value>
-							<Value>
-								<Name>Geometric online information.2.start.x</Name>
-								<Value>60</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.2.start.y</Name>
-								<Value>90</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.2.start.c</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.2.end.x</Name>
-								<Value>60</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.2.end.y</Name>
-								<Value>150</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.2.end.c</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.h3</Name>
-								<Data>d8648ab44f46394b8708c82c1147c8b6</Data>
-							</Value>
-							<Value>
-								<Name>Geometric online information.3.start.x</Name>
-								<Value>90</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.3.start.y</Name>
-								<Value>180</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.3.start.c</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.3.end.x</Name>
-								<Value>210</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.3.end.y</Name>
-								<Value>180</Value>
-							</Value>
-							<Value>
-								<Name>Geometric online information.3.end.c</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Previous tracks[1]</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Previous tracks[2]</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Subsequent tracks[1]</Name>
-								<Value>0</Value>
-							</Value>
-							<Value>
-								<Name>Subsequent tracks[2]</Name>
 								<Value>0</Value>
 							</Value>
 							<Value>
@@ -12740,6 +12637,7 @@
 		</Motion>
 		<Plc>
 			<Project File="plc1.xti"/>
+			<PlcAuxTask Affinity="#x00004000"/>
 		</Plc>
 		<Io/>
 	</Project>

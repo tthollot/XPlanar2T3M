@@ -184,7 +184,7 @@
                 <n n="VisualElementFrameInformation" />
                 <d n="VisualElementInputActions" t="Hashtable" />
                 <v n="VisualElementIdentification">{f8163f82-3f7f-471c-b251-f0ec6fa481d9}</v>
-                <v n="VisualElementOwningObjectGuid">{c4fc15e1-0ba4-407f-b7be-e18e9c406fc2}</v>
+                <v n="VisualElementOwningObjectGuid">{6f1f80c7-6ee8-0540-0b17-f89e02695488}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
                 <v n="VisualElementId">0</v>
@@ -282,7 +282,7 @@
                 <v>32dec6d6-7d79-4b3e-8496-8a7ae010a149</v>
               </d>
               <v n="FbName">"NotImportant"</v>
-              <v n="FbGuid">{c4fc15e1-0ba4-407f-b7be-e18e9c406fc2}</v>
+              <v n="FbGuid">{6f1f80c7-6ee8-0540-0b17-f89e02695488}</v>
             </o>
             <v n="GeneratedGlobalVisuVarsGuid">{f5d6928c-00b6-48b5-b2ca-545519a808ff}</v>
             <v n="GeneratedGlobalTheVisuVarlistGuid">{4ca75623-0d89-4cf1-8401-365a429179a7}</v>

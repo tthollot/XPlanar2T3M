@@ -23,8 +23,8 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// CyclicLogic method must be called every PLC cycle - it calls underlying cyclic methods
-// Execute method must be called when running or moving movers for recovery - manages station state machine
+      <ST><![CDATA[// CyclicLogic method must be called every PLC cycle - it calls underlying XPlanar cyclic methods
+// Execute method must be called when running or moving movers - manages station state machine
 // Initialize method assign Mover and Track IPs, configures and builds tracks & track network, sets up Stations
 // Reset method resets objects, enables group, enables movers
 // Recovery method sorts movers - join track and go to appropriate station
