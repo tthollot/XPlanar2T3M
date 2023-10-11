@@ -29,12 +29,12 @@ CASE MachineState OF
 			MachineState := MachineState + 10;
 		END_IF
 		
-	20:  // Initialize (build tracks, setup stations, enable Group, movers, tracks)
+	20:  // Initialize (assign IPs, build tracks, setup stations, ...)
 		IF XPlanar1.Initialize() THEN
 			MachineState := MachineState + 10;
 		END_IF
 
-	30: // Reset / enable
+	30: // Reset / enable (reset table, enable Group, movers, tracks, ...)
 		IF XPlanar1.Reset() THEN
 			MachineState := MachineState + 10;
 		END_IF
@@ -69,7 +69,6 @@ CASE MachineState OF
 END_CASE
 
 XPlanar1.CyclicLogic();		// top level XPlanar object CyclicLogic method must be called every PLC cycle
-
 
 // Handle disabling movers
 IF (MachineState > 20 AND HmiDisable) 					// monitor disable button after initialized

@@ -156,11 +156,29 @@ CASE RecoveryState OF
 		MoverProcessData[i].Status:=0;	
 	END_FOR
 	i := 1;
+	RecoveryState := 30;
 
-	RecoveryState := RecoveryState + 10;
+(*  ************* other possible tools / strategies for table recovery ******* 
+20: // Dequeue - remove movers from stations
+	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.maxNumStation DO
+		ip.Stations[i].MoverQueue.Dequeue();
+	END_FOR
+	i := 1;
+	RecoveryState := 30;
+	
+	
+25: // Station.Recover - get movers back to position within station
+	IF ip.Stations[i].Recover() THEN
+		i := i + 1;
+		IF i > Tc3_XPlanarStandard.Params_XPlanar.maxNumStation THEN
+			i := 1;
+			RecoveryState := ??;
+		END_IF
+	END_IF
+*)
 
-20: // determine which track to join
-	IF ip.Movers[i].std.P_ActPosition.X < 220 THEN
+30: // determine which track to join
+	IF ip.Movers[i].std.P_ActPosition.X < 210 THEN
 		JoinTrackNum := 1;
 	ELSE
 		JoinTrackNum := 3;
@@ -168,7 +186,7 @@ CASE RecoveryState OF
 	
 	RecoveryState := RecoveryState + 1;
 	
-21:	// mover joins track
+31:	// mover joins track
 	IF ip.Movers[i].JoinTrack(ip.Tracks[JoinTrackNum]) THEN
 		i := i + 1;
 		IF i > Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
@@ -179,7 +197,7 @@ CASE RecoveryState OF
 		
 	END_IF
 	
-30:  // verify on track	
+40:  // verify on track	
 	AllMoversOnTracks:=TRUE;
 	FOR i := 1 TO Tc3_XPlanarStandard.Params_XPlanar.moverCount DO
 //		AllMoversOnTracks := AllMoversOnTracks AND (ip.Movers[i].std.P_TrackId<>0);												// if any mover not on track set False
@@ -195,10 +213,10 @@ CASE RecoveryState OF
 		END_IF
 	END_IF
 
-40: // determine which station to go to
+50: // determine which station to go to
 	IF ip.Movers[i].std.P_ActPosition.Y < 119 THEN
 		GoToStationNum := 1;
-	ELSIF ip.Movers[i].std.P_ActPosition.X < 210 AND ip.Stations[3].HasMover THEN
+	ELSIF ip.Movers[i].std.P_ActPosition.X < 210 AND ip.Tracks[3].MoverCount > 1 THEN
 		GoToStationNum := 2;
 	ELSE
 		GoToStationNum := 3;
@@ -206,7 +224,7 @@ CASE RecoveryState OF
 	
 	RecoveryState := RecoveryState + 1;
 	
-41:	// send movers to stations
+51:	// send movers to stations
 	IF ip.Movers[i].SendToStation(ip.Stations[GoToStationNum]) THEN
 		i := i + 1;
 		IF i > Tc3_XPlanarStandard.Params_XPlanar.moverCount THEN
@@ -217,7 +235,7 @@ CASE RecoveryState OF
 		
 	END_IF
 	
-50:
+60:
 	Recovery := TRUE;
 	RecoveryState := 0;
 
@@ -242,8 +260,9 @@ END_VAR
 CASE ResetState OF
 	
 0:
-	ResetState := ResetState + 10;
-	
+	ResetState := 30;
+
+(*	
 10:  // Force movers to leave tracks (handles case where movers are still on tracks - support for Recovery method)
 	IF XPlanarTable.XPlanarSystem.LeaveTrack() THEN
 		ResetState := ResetState + 10;
@@ -253,6 +272,7 @@ CASE ResetState OF
 	IF XPlanarTable.XPlanarSystem.P_LeaveTrack.Done THEN
 		ResetState := ResetState + 10;
 	END_IF
+*)
 
 30:  // Reset base objects (movers and tracks)
 	IF XPlanarTable.Reset() THEN

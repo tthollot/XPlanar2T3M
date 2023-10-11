@@ -79,7 +79,7 @@ IF StationState = E_XPlanarStationState.ProcessMover THEN
 				IF tonProcess.Q THEN ProcessState := 20; END_IF
 				
 			20:	// Decide what to do next
-				IF ip.Stations[2].HasMover THEN		// releasing mover to station1 could block mover from getting to Station2
+				IF ip.Stations[2].HasMover or ip.Tracks[3].MoverCount > 1 then			// releasing mover to station1 could block mover from getting to Station2
 					GVL.MoverProcessData[ipCurrentMover.MoverIndex].Status := 0;		// product unloaded (visu off)
 					ipNextStation := ip.Stations[1];	
 					ProcessState := 100;

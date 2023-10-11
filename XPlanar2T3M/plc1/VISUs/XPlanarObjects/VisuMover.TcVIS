@@ -329,7 +329,7 @@
                     </o>
                     <o>
                       <v n="Id">2880254039L</v>
-                      <v n="Value">"MAIN.MoverProcessData[i].Status=0"</v>
+                      <v n="Value">"GVL.MoverProcessData[i].Status=0"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -561,13 +561,13 @@
             <d2 n="Size" ckt="Int32" cvt="VisualObjectSize">
               <v>0</v>
               <o>
-                <v n="Width">115</v>
-                <v n="Height">115</v>
+                <v n="Width">114</v>
+                <v n="Height">114</v>
               </o>
               <v>1</v>
               <o>
-                <v n="Width">115</v>
-                <v n="Height">115</v>
+                <v n="Width">114</v>
+                <v n="Height">114</v>
               </o>
             </d2>
             <v n="Version">1</v>
