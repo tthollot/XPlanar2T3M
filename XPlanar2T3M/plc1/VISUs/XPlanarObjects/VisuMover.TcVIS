@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <Visu Name="VisuMover115" Id="{0d3aa3ac-ecd2-442b-ae0e-3d6009cc9db4}">
+  <Visu Name="VisuMover" Id="{0d3aa3ac-ecd2-442b-ae0e-3d6009cc9db4}">
     <XmlArchive>
       <Data>
         <o xml:space="preserve" t="VisualObject">
           <n n="LastVisuLanguageModelEntry" />
-          <v n="UniqueIdGenerator">"15"</v>
+          <v n="UniqueIdGenerator">"18"</v>
           <o n="VisualElemList" t="VisualElemList">
             <l n="VisualElementList" t="VisualElemCollection" cet="GenericVisualElem">
               <o>
@@ -523,17 +523,17 @@
           <o n="TextDocument" t="TextDocument">
             <a n="TextLines" cet="TextLine">
               <o>
-                <v n="Id">13L</v>
+                <v n="Id">16L</v>
                 <n n="Tag" />
                 <v n="Text">"VAR_INPUT"</v>
               </o>
               <o>
-                <v n="Id">14L</v>
+                <v n="Id">17L</v>
                 <n n="Tag" />
                 <v n="Text">"	i : INT;"</v>
               </o>
               <o>
-                <v n="Id">15L</v>
+                <v n="Id">18L</v>
                 <n n="Tag" />
                 <v n="Text">"	"</v>
               </o>
@@ -614,8 +614,8 @@
         <Data>
           <o xml:space="preserve" t="VisualProperty">
             <v n="VisuUsageType">0</v>
-            <v n="SizeX">115</v>
-            <v n="SizeY">115</v>
+            <v n="SizeX">114</v>
+            <v n="SizeY">114</v>
             <v n="IsStartVisu">false</v>
             <v n="VisuSizeMode" t="VisualVisuSizeMode">Specified</v>
             <v n="Internal">false</v>

@@ -3504,19 +3504,19 @@
                     </o>
                     <o>
                       <v n="Id">1649127785L</v>
-                      <v n="Value" t="Int16">-60</v>
+                      <v n="Value">-60</v>
                     </o>
                     <o>
                       <v n="Id">357335551L</v>
-                      <v n="Value" t="Int16">-60</v>
+                      <v n="Value">-60</v>
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">120</v>
+                      <v n="Value">120</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
-                      <v n="Value" t="Int16">120</v>
+                      <v n="Value">120</v>
                     </o>
                     <o>
                       <v n="Id">394923068L</v>
@@ -3528,7 +3528,7 @@
                     </o>
                     <o>
                       <v n="Id">3549563837L</v>
-                      <v n="Value">"ANISOTROPIC"</v>
+                      <v n="Value">"FIXED"</v>
                     </o>
                     <o>
                       <v n="Id">363316305L</v>
@@ -3785,11 +3785,11 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">493260384L</v>
@@ -3879,7 +3879,7 @@
                 <v n="VisualElementName">"Frame"</v>
                 <v n="VisualElementTypeName">"VisuFbFrame"</v>
                 <v n="VisualElementIsRectangle">true</v>
-                <v n="VisualElementIdentifier">"GenElemInst_127"</v>
+                <v n="VisualElementIdentifier">"GenElemInst_607"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <o n="VisualElementFrameInformation" t="VisualFrameInfo">
                   <l n="ContainedGuids" t="ArrayList" />
@@ -3889,11 +3889,11 @@
                   </a>
                 </o>
                 <d n="VisualElementInputActions" t="Hashtable" />
-                <v n="VisualElementIdentification">{fa729cd8-414d-40e5-8dbb-324493ca527e}</v>
+                <v n="VisualElementIdentification">{fb9c607d-72ab-43e2-958c-351c563bcf8c}</v>
                 <v n="VisualElementOwningObjectGuid">{41271fb5-4d7b-019d-3915-0156a6a573e0}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
-                <v n="VisualElementId">128</v>
+                <v n="VisualElementId">585</v>
                 <l n="UserManagementAccessRights" t="ArrayList" />
               </o>
               <o>
@@ -3986,11 +3986,11 @@
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">120</v>
+                      <v n="Value">120</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
-                      <v n="Value" t="Int16">120</v>
+                      <v n="Value">120</v>
                     </o>
                     <o>
                       <v n="Id">394923068L</v>
@@ -4002,7 +4002,7 @@
                     </o>
                     <o>
                       <v n="Id">3549563837L</v>
-                      <v n="Value">"ANISOTROPIC"</v>
+                      <v n="Value">"FIXED"</v>
                     </o>
                     <o>
                       <v n="Id">363316305L</v>
@@ -4259,11 +4259,11 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">493260384L</v>
@@ -4353,7 +4353,7 @@
                 <v n="VisualElementName">"Frame"</v>
                 <v n="VisualElementTypeName">"VisuFbFrame"</v>
                 <v n="VisualElementIsRectangle">true</v>
-                <v n="VisualElementIdentifier">"GenElemInst_129"</v>
+                <v n="VisualElementIdentifier">"GenElemInst_609"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <o n="VisualElementFrameInformation" t="VisualFrameInfo">
                   <l n="ContainedGuids" t="ArrayList" />
@@ -4363,11 +4363,11 @@
                   </a>
                 </o>
                 <d n="VisualElementInputActions" t="Hashtable" />
-                <v n="VisualElementIdentification">{96de35ce-5482-4aa6-9691-2ac6ea020de3}</v>
+                <v n="VisualElementIdentification">{4df7ac76-3b7f-4d21-97af-db91b4f6742d}</v>
                 <v n="VisualElementOwningObjectGuid">{41271fb5-4d7b-019d-3915-0156a6a573e0}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
-                <v n="VisualElementId">130</v>
+                <v n="VisualElementId">587</v>
                 <l n="UserManagementAccessRights" t="ArrayList" />
               </o>
               <o>
@@ -4460,11 +4460,11 @@
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">120</v>
+                      <v n="Value">120</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
-                      <v n="Value" t="Int16">120</v>
+                      <v n="Value">120</v>
                     </o>
                     <o>
                       <v n="Id">394923068L</v>
@@ -4476,7 +4476,7 @@
                     </o>
                     <o>
                       <v n="Id">3549563837L</v>
-                      <v n="Value">"ANISOTROPIC"</v>
+                      <v n="Value">"FIXED"</v>
                     </o>
                     <o>
                       <v n="Id">363316305L</v>
@@ -4733,11 +4733,11 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">493260384L</v>
@@ -4827,7 +4827,7 @@
                 <v n="VisualElementName">"Frame"</v>
                 <v n="VisualElementTypeName">"VisuFbFrame"</v>
                 <v n="VisualElementIsRectangle">true</v>
-                <v n="VisualElementIdentifier">"GenElemInst_131"</v>
+                <v n="VisualElementIdentifier">"GenElemInst_611"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <o n="VisualElementFrameInformation" t="VisualFrameInfo">
                   <l n="ContainedGuids" t="ArrayList" />
@@ -4837,11 +4837,11 @@
                   </a>
                 </o>
                 <d n="VisualElementInputActions" t="Hashtable" />
-                <v n="VisualElementIdentification">{234a02d0-c81d-4717-ba2a-f8d3425376f5}</v>
+                <v n="VisualElementIdentification">{2ffd17ac-b64f-42a3-a94d-78f5f05b0780}</v>
                 <v n="VisualElementOwningObjectGuid">{41271fb5-4d7b-019d-3915-0156a6a573e0}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
-                <v n="VisualElementId">132</v>
+                <v n="VisualElementId">589</v>
                 <l n="UserManagementAccessRights" t="ArrayList" />
               </o>
               <o>
@@ -4926,19 +4926,19 @@
                     </o>
                     <o>
                       <v n="Id">1649127785L</v>
-                      <v n="Value" t="Int16">-58</v>
+                      <v n="Value" t="Int16">-57</v>
                     </o>
                     <o>
                       <v n="Id">357335551L</v>
-                      <v n="Value" t="Int16">-58</v>
+                      <v n="Value" t="Int16">-57</v>
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">116</v>
+                      <v n="Value" t="Int16">114</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
-                      <v n="Value" t="Int16">116</v>
+                      <v n="Value" t="Int16">114</v>
                     </o>
                     <o>
                       <v n="Id">394923068L</v>
@@ -4950,7 +4950,7 @@
                     </o>
                     <o>
                       <v n="Id">3549563837L</v>
-                      <v n="Value">"ANISOTROPIC"</v>
+                      <v n="Value">"FIXED"</v>
                     </o>
                     <o>
                       <v n="Id">363316305L</v>
@@ -5025,7 +5025,7 @@
                               <o>
                                 <v n="VisuNodeReferenceGuid">{00000000-0000-0000-0000-000000000000}</v>
                                 <n n="VisuNodeReference" />
-                                <v n="VisNodeRefs33">"VisuMover115"</v>
+                                <v n="VisNodeRefs33">"VisuMover"</v>
                                 <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                                   <o>
                                     <v n="Flags">1L</v>
@@ -5207,11 +5207,11 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">493260384L</v>
@@ -5226,15 +5226,11 @@
                       <v n="Value">""</v>
                     </o>
                     <o>
-                      <v n="Id">2597686782L</v>
-                      <v n="Value">true</v>
-                    </o>
-                    <o>
                       <v n="Id">2473092364L</v>
                       <o n="Value" t="VisualizationNode">
                         <v n="VisuNodeReferenceGuid">{00000000-0000-0000-0000-000000000000}</v>
                         <n n="VisuNodeReference" />
-                        <v n="VisNodeRefs33">"VisuMover115"</v>
+                        <v n="VisNodeRefs33">"VisuMover"</v>
                         <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                           <o>
                             <v n="Flags">1L</v>
@@ -5293,6 +5289,10 @@
                       </o>
                     </o>
                     <o>
+                      <v n="Id">2597686782L</v>
+                      <v n="Value">true</v>
+                    </o>
+                    <o>
                       <v n="Id">4024273820L</v>
                       <v n="Value">"1"</v>
                     </o>
@@ -5301,21 +5301,21 @@
                 <v n="VisualElementName">"Frame"</v>
                 <v n="VisualElementTypeName">"VisuFbFrame"</v>
                 <v n="VisualElementIsRectangle">true</v>
-                <v n="VisualElementIdentifier">"GenElemInst_551"</v>
+                <v n="VisualElementIdentifier">"GenElemInst_613"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <o n="VisualElementFrameInformation" t="VisualFrameInfo">
                   <l n="ContainedGuids" t="ArrayList" />
                   <l n="ContainedVisualizations" t="ArrayList" />
                   <a n="ContainedVisualizations33" cet="String">
-                    <v>VisuMover115</v>
+                    <v>VisuMover</v>
                   </a>
                 </o>
                 <d n="VisualElementInputActions" t="Hashtable" />
-                <v n="VisualElementIdentification">{ca43e6a2-a958-49c3-8241-f9d5298a7e08}</v>
+                <v n="VisualElementIdentification">{36ad3790-f951-40f2-8627-ead4e9330a92}</v>
                 <v n="VisualElementOwningObjectGuid">{41271fb5-4d7b-019d-3915-0156a6a573e0}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
-                <v n="VisualElementId">551</v>
+                <v n="VisualElementId">591</v>
                 <l n="UserManagementAccessRights" t="ArrayList" />
               </o>
               <o>
@@ -5400,19 +5400,19 @@
                     </o>
                     <o>
                       <v n="Id">1649127785L</v>
-                      <v n="Value" t="Int16">-58</v>
+                      <v n="Value" t="Int16">-57</v>
                     </o>
                     <o>
                       <v n="Id">357335551L</v>
-                      <v n="Value" t="Int16">-58</v>
+                      <v n="Value" t="Int16">-57</v>
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">116</v>
+                      <v n="Value" t="Int16">114</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
-                      <v n="Value" t="Int16">116</v>
+                      <v n="Value" t="Int16">114</v>
                     </o>
                     <o>
                       <v n="Id">394923068L</v>
@@ -5424,7 +5424,7 @@
                     </o>
                     <o>
                       <v n="Id">3549563837L</v>
-                      <v n="Value">"ANISOTROPIC"</v>
+                      <v n="Value">"FIXED"</v>
                     </o>
                     <o>
                       <v n="Id">363316305L</v>
@@ -5499,7 +5499,7 @@
                               <o>
                                 <v n="VisuNodeReferenceGuid">{00000000-0000-0000-0000-000000000000}</v>
                                 <n n="VisuNodeReference" />
-                                <v n="VisNodeRefs33">"VisuMover115"</v>
+                                <v n="VisNodeRefs33">"VisuMover"</v>
                                 <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                                   <o>
                                     <v n="Flags">1L</v>
@@ -5681,11 +5681,11 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">493260384L</v>
@@ -5700,15 +5700,11 @@
                       <v n="Value">""</v>
                     </o>
                     <o>
-                      <v n="Id">2597686782L</v>
-                      <v n="Value">true</v>
-                    </o>
-                    <o>
                       <v n="Id">2473092364L</v>
                       <o n="Value" t="VisualizationNode">
                         <v n="VisuNodeReferenceGuid">{00000000-0000-0000-0000-000000000000}</v>
                         <n n="VisuNodeReference" />
-                        <v n="VisNodeRefs33">"VisuMover115"</v>
+                        <v n="VisNodeRefs33">"VisuMover"</v>
                         <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                           <o>
                             <v n="Flags">1L</v>
@@ -5767,6 +5763,10 @@
                       </o>
                     </o>
                     <o>
+                      <v n="Id">2597686782L</v>
+                      <v n="Value">true</v>
+                    </o>
+                    <o>
                       <v n="Id">4024273820L</v>
                       <v n="Value">"2"</v>
                     </o>
@@ -5775,21 +5775,21 @@
                 <v n="VisualElementName">"Frame"</v>
                 <v n="VisualElementTypeName">"VisuFbFrame"</v>
                 <v n="VisualElementIsRectangle">true</v>
-                <v n="VisualElementIdentifier">"GenElemInst_577"</v>
+                <v n="VisualElementIdentifier">"GenElemInst_615"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <o n="VisualElementFrameInformation" t="VisualFrameInfo">
                   <l n="ContainedGuids" t="ArrayList" />
                   <l n="ContainedVisualizations" t="ArrayList" />
                   <a n="ContainedVisualizations33" cet="String">
-                    <v>VisuMover115</v>
+                    <v>VisuMover</v>
                   </a>
                 </o>
                 <d n="VisualElementInputActions" t="Hashtable" />
-                <v n="VisualElementIdentification">{a0207848-1c94-4331-a6a6-9f444f712cf8}</v>
+                <v n="VisualElementIdentification">{39408d5b-8a23-47b9-a7b4-6a7492d4e3f7}</v>
                 <v n="VisualElementOwningObjectGuid">{41271fb5-4d7b-019d-3915-0156a6a573e0}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
-                <v n="VisualElementId">581</v>
+                <v n="VisualElementId">593</v>
                 <l n="UserManagementAccessRights" t="ArrayList" />
               </o>
               <o>
@@ -5874,19 +5874,19 @@
                     </o>
                     <o>
                       <v n="Id">1649127785L</v>
-                      <v n="Value" t="Int16">-58</v>
+                      <v n="Value" t="Int16">-57</v>
                     </o>
                     <o>
                       <v n="Id">357335551L</v>
-                      <v n="Value" t="Int16">-58</v>
+                      <v n="Value" t="Int16">-57</v>
                     </o>
                     <o>
                       <v n="Id">2422045748L</v>
-                      <v n="Value" t="Int16">116</v>
+                      <v n="Value" t="Int16">114</v>
                     </o>
                     <o>
                       <v n="Id">2134141914L</v>
-                      <v n="Value" t="Int16">116</v>
+                      <v n="Value" t="Int16">114</v>
                     </o>
                     <o>
                       <v n="Id">394923068L</v>
@@ -5898,7 +5898,7 @@
                     </o>
                     <o>
                       <v n="Id">3549563837L</v>
-                      <v n="Value">"ANISOTROPIC"</v>
+                      <v n="Value">"FIXED"</v>
                     </o>
                     <o>
                       <v n="Id">363316305L</v>
@@ -5973,7 +5973,7 @@
                               <o>
                                 <v n="VisuNodeReferenceGuid">{00000000-0000-0000-0000-000000000000}</v>
                                 <n n="VisuNodeReference" />
-                                <v n="VisNodeRefs33">"VisuMover115"</v>
+                                <v n="VisNodeRefs33">"VisuMover"</v>
                                 <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                                   <o>
                                     <v n="Flags">1L</v>
@@ -6155,11 +6155,11 @@
                     </o>
                     <o>
                       <v n="Id">550940142L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">1473355128L</v>
-                      <v n="Value" t="Int16">0</v>
+                      <v n="Value">0</v>
                     </o>
                     <o>
                       <v n="Id">493260384L</v>
@@ -6174,15 +6174,11 @@
                       <v n="Value">""</v>
                     </o>
                     <o>
-                      <v n="Id">2597686782L</v>
-                      <v n="Value">true</v>
-                    </o>
-                    <o>
                       <v n="Id">2473092364L</v>
                       <o n="Value" t="VisualizationNode">
                         <v n="VisuNodeReferenceGuid">{00000000-0000-0000-0000-000000000000}</v>
                         <n n="VisuNodeReference" />
-                        <v n="VisNodeRefs33">"VisuMover115"</v>
+                        <v n="VisNodeRefs33">"VisuMover"</v>
                         <l n="TypeNodeChildren" t="ArrayList" cet="BasicTypeNode">
                           <o>
                             <v n="Flags">1L</v>
@@ -6241,6 +6237,10 @@
                       </o>
                     </o>
                     <o>
+                      <v n="Id">2597686782L</v>
+                      <v n="Value">true</v>
+                    </o>
+                    <o>
                       <v n="Id">4024273820L</v>
                       <v n="Value">"3"</v>
                     </o>
@@ -6249,21 +6249,21 @@
                 <v n="VisualElementName">"Frame"</v>
                 <v n="VisualElementTypeName">"VisuFbFrame"</v>
                 <v n="VisualElementIsRectangle">true</v>
-                <v n="VisualElementIdentifier">"GenElemInst_579"</v>
+                <v n="VisualElementIdentifier">"GenElemInst_617"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <o n="VisualElementFrameInformation" t="VisualFrameInfo">
                   <l n="ContainedGuids" t="ArrayList" />
                   <l n="ContainedVisualizations" t="ArrayList" />
                   <a n="ContainedVisualizations33" cet="String">
-                    <v>VisuMover115</v>
+                    <v>VisuMover</v>
                   </a>
                 </o>
                 <d n="VisualElementInputActions" t="Hashtable" />
-                <v n="VisualElementIdentification">{c5118a2c-8113-45df-baa4-94a58be5db87}</v>
+                <v n="VisualElementIdentification">{20d4e93b-2344-448b-a266-b81891e4cc7f}</v>
                 <v n="VisualElementOwningObjectGuid">{41271fb5-4d7b-019d-3915-0156a6a573e0}</v>
                 <a n="LMGuids" et="Guid" />
                 <d n="SubElements" t="Hashtable" />
-                <v n="VisualElementId">583</v>
+                <v n="VisualElementId">595</v>
                 <l n="UserManagementAccessRights" t="ArrayList" />
               </o>
             </l>
@@ -6415,7 +6415,7 @@
             </o>
             <v n="DialogDut">{d0c09a0b-0d3c-4632-8b8d-2bb36e78bb07}</v>
           </o>
-          <v n="LastUsedIdForIdentifier">606</v>
+          <v n="LastUsedIdForIdentifier">617</v>
           <o n="TextDocument" t="TextDocument">
             <a n="TextLines" cet="TextLine">
               <o>

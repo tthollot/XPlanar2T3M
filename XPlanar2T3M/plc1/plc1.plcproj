@@ -56,7 +56,7 @@
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
-    <Compile Include="VISUs\XPlanarObjects\VisuMover115.TcVIS">
+    <Compile Include="VISUs\XPlanarObjects\VisuMover.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
